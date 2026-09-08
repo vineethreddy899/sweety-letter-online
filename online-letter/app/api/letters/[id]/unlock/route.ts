@@ -1,0 +1,2 @@
+import { NextResponse } from "next/server"; import { unlockLetter } from "@/lib/letter-service";
+export async function POST(req:Request,{params}:{params:Promise<{id:string}>}){const {id}=await params;try{const {password}=await req.json();const l=await unlockLetter(id,password);return l?NextResponse.json(l):NextResponse.json({error:"Unable to open this letter. Check the link or password."},{status:401})}catch{return NextResponse.json({error:"Unable to open this letter."},{status:401})}}

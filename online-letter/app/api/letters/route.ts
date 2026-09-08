@@ -1,0 +1,2 @@
+import { NextResponse } from "next/server"; import { createLetter } from "@/lib/letter-service";
+export async function POST(req:Request){try{const data=await req.json();const {letter,shareUrl}=await createLetter(data);return NextResponse.json({id:letter.id,shareUrl,hasPassword:!!letter.passwordHash},{status:201})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Something went wrong"},{status:400})}}

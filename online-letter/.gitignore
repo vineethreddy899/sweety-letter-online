@@ -1,0 +1,54 @@
+# Node modules
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Vercel CLI/local metadata
+.vercel/
+.vercel_build_output/
+
+# Local env files (should not be deployed)
+.env
+.env.*
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Coverage & caches
+coverage/
+.cache/
+.next/cache/
+.parcel-cache/
+
+# Misc
+.sass-cache/
+*.local
+*.log
+
+# Ignore local build artifacts
+dist/
+build/
+
+# Ignore test output
+coverage/
+
+# Ignore storybook build
+.storybook/
+
+# Optional lockfile caches (don't ignore lockfiles needed for deterministic builds)
+# e.g. don't ignore package-lock.json, yarn.lock, or pnpm-lock.yaml

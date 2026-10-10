@@ -20,22 +20,58 @@ const upstash = useUpstash ? new Redis({ url: upstashUrl!, token: upstashToken! 
 const key = (id: string) => `letter:${id}`;
 
 export async function saveLetter(letter: Letter) {
-	if (useKV) {
-		await kv.set(key(letter.id), letter);
-		return;
-	}
-	if (useUpstash && upstash) {
-		await upstash.set(key(letter.id), JSON.stringify(letter));
-		return;
-	}
 	memory.set(letter.id, letter);
+
+	if (useKV) {
+		try {
+			await kv.set(key(letter.id), letter);
+			return;
+		} catch (error) {
+			console.warn("Vercel KV save failed; using in-memory fallback.", error);
+		}
+	}
+
+	if (useUpstash && upstash) {
+		try {
+			await upstash.set(key(letter.id), JSON.stringify(letter));
+			return;
+		} catch (error) {
+			console.warn("Upstash save failed; using in-memory fallback.", error);
+		}
+	}
 }
 
 export async function getLetter(id: string) {
-	if (useKV) return await kv.get<Letter>(key(id));
-	if (useUpstash && upstash) {
-		const res = await upstash.get<string>(key(id));
-		return res ? (JSON.parse(res) as Letter) : undefined;
+	const fallback = memory.get(id);
+
+	if (useKV) {
+		try {
+			const letter = await kv.get<Letter>(key(id));
+			if (letter) {
+				memory.set(id, letter);
+				return letter;
+			}
+			return fallback;
+		} catch (error) {
+			console.warn("Vercel KV read failed; using in-memory fallback.", error);
+			return fallback;
+		}
 	}
-	return memory.get(id);
+
+	if (useUpstash && upstash) {
+		try {
+			const res = await upstash.get<string>(key(id));
+			if (res) {
+				const letter = JSON.parse(res) as Letter;
+				memory.set(id, letter);
+				return letter;
+			}
+			return fallback;
+		} catch (error) {
+			console.warn("Upstash read failed; using in-memory fallback.", error);
+			return fallback;
+		}
+	}
+
+	return fallback;
 }

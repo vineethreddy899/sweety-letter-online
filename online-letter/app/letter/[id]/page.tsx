@@ -27,6 +27,7 @@ export default function LetterPage({ params }: { params: Promise<{ id: string }>
  
 	const unlock = async (password?: string) => { 
 		setError(""); 
+		setPhase("opening"); 
 		const r = await fetch(`/api/letters/${id}/unlock`, { 
 			method: "POST", 
 			headers: { "Content-Type": "application/json" }, 
@@ -34,11 +35,13 @@ export default function LetterPage({ params }: { params: Promise<{ id: string }>
 		}); 
 		if (!r.ok) { 
 			setError("Unable to open this letter."); 
+			setPhase("envelope");
 			return false; 
 		}
-		setLetter(await r.json()); 
-	setShowModal(false); 
-	setPhase("opening"); 
+		const nextLetter = await r.json(); 
+		setLetter(nextLetter); 
+		setShowModal(false); 
+		setPhase("letter"); 
 		return true; 
 	}; 
  

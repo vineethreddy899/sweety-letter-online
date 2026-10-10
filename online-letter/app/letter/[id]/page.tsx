@@ -70,6 +70,10 @@ export default function LetterPage({ params }: { params: Promise<{ id: string }>
 				<div className="mx-auto max-w-3xl"> 
 					<LetterPaper mode="read" toName={letter.toName} body={letter.body} /> 
 				</div> 
+				<Link href="/" className="fixed bottom-8 right-8 inline-flex items-center gap-3 rounded-full bg-[#7A2D40] px-8 py-4 text-2xl font-medium text-white shadow-[0_10px_25px_rgba(122,45,64,0.18)] transition-transform duration-200 hover:-translate-y-0.5"> 
+					<span>Reply back</span>
+					<span aria-hidden="true">→</span>
+				</Link> 
 			</main> 
 		); 
 	return ( 
